@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard – GDR Construction</title>
+  <link rel="stylesheet" href="../css/portal.css">
+  <style>
+    .profile-card { background:white; border-radius:16px; padding:28px; box-shadow:var(--shadow-sm); margin-bottom:24px; display:flex; align-items:center; gap:24px; }
+    .profile-avatar { width:72px; height:72px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:white; font-size:1.8rem; font-weight:800; flex-shrink:0; }
+    .profile-info h2 { font-size:1.3rem; color:var(--secondary); }
+    .profile-meta { display:flex; gap:20px; margin-top:6px; flex-wrap:wrap; }
+    .profile-meta span { font-size:0.82rem; color:var(--gray); display:flex; align-items:center; gap:5px; }
+    .info-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .info-item { background:#f8f9fa; border-radius:10px; padding:14px 16px; }
+    .info-item label { font-size:0.75rem; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:4px; }
+    .info-item span { font-size:0.92rem; font-weight:600; color:var(--secondary); }
+    .history-table td, .history-table th { padding:10px 14px; font-size:0.85rem; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="portal-nav">
+    <div class="logo">
+      <div class="logo-box">GDR</div>
+      <div class="logo-text">
+        <h2>GDR Construction</h2>
+        <span>Employee Portal</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" style="font-size:0.82rem;color:rgba(255,255,255,0.6)">🌐 Website</a>
+      <div class="user-info">
+        <div class="avatar emp-avatar">R</div>
+        <div>
+          <div class="user-name emp-name">Loading...</div>
+          <div class="user-role emp-role">Employee</div>
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="empLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- LAYOUT -->
+  <div class="portal-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-menu">
+        <div class="sidebar-section">Navigation</div>
+        <div class="sidebar-link active" data-page="dashboard" onclick="switchSidebar('dashboard')">
+          <span class="icon">📊</span> Dashboard
+        </div>
+        <div class="sidebar-link" data-page="attendance" onclick="switchSidebar('attendance')">
+          <span class="icon">📅</span> My Attendance
+        </div>
+        <div class="sidebar-link" data-page="earnings" onclick="switchSidebar('earnings')">
+          <span class="icon">💰</span> My Earnings
+        </div>
+        <div class="sidebar-section">Account</div>
+        <div class="sidebar-link" data-page="profile" onclick="switchSidebar('profile')">
+          <span class="icon">👤</span> My Profile
+        </div>
+        <div class="sidebar-link" data-page="password" onclick="switchSidebar('password')">
+          <span class="icon">🔒</span> Change Password
+        </div>
+        <div class="sidebar-section">Links</div>
+        <div class="sidebar-link" onclick="window.location.href='index.html'">
+          <span class="icon">🌐</span> Company Website
+        </div>
+        <div class="sidebar-link" onclick="empLogout()" style="margin-top:auto">
+          <span class="icon">🚪</span> Logout
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="portal-main">
+
+      <!-- DASHBOARD PAGE -->
+      <div id="page-dashboard" class="portal-page">
+        <div class="page-header">
+          <div>
+            <h1>My Dashboard</h1>
+            <p>Welcome back! Here's your attendance summary for this month.</p>
+          </div>
+          <div style="font-size:0.85rem;color:var(--gray)">📅 <span id="todayDate"></span></div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-avatar emp-avatar">R</div>
+          <div class="profile-info">
+            <h2 class="emp-name">Loading...</h2>
+            <div class="profile-meta">
+              <span>🪪 <span class="emp-id">—</span></span>
+              <span>📱 <span class="emp-mobile">—</span></span>
+              <span>🏗️ <span class="emp-role">—</span></span>
+              <span>📍 <span class="emp-project">—</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card green">
+            <div class="s-icon">✅</div>
+            <div class="s-val" id="statPresent">—</div>
+            <div class="s-label">Days Present (This Month)</div>
+          </div>
+          <div class="stat-card red">
+            <div class="s-icon">❌</div>
+            <div class="s-val" id="statAbsent">—</div>
+            <div class="s-label">Days Absent (This Month)</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="s-icon">🔸</div>
+            <div class="s-val" id="statHalf">—</div>
+            <div class="s-label">Half Days</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="s-icon">💰</div>
+            <div class="s-val" id="statEarnings">—</div>
+            <div class="s-label">Estimated Earnings</div>
+          </div>
+        </div>
+
+        <!-- Attendance Calendar + Quick Info -->
+        <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;">
+          <div class="attendance-calendar">
+            <div class="cal-header">
+              <h3>📅 Attendance Calendar</h3>
+              <div class="cal-nav">
+                <button onclick="changeMonth(-1)">‹</button>
+                <span id="calMonthLabel">Loading...</span>
+                <button onclick="changeMonth(1)">›</button>
+              </div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#d4efdf"></div>Present</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#fadbd8"></div>Absent</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#fdebd0"></div>Half Day</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#d6eaf8"></div>Overtime</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card">
+              <div class="card-header"><h3>📊 This Month</h3></div>
+              <div class="card-body">
+                <div style="text-align:center;margin-bottom:16px">
+                  <div style="font-size:2.8rem;font-weight:900;color:var(--primary)" id="attendPercent">—</div>
+                  <div style="font-size:0.82rem;color:var(--gray)">Attendance Rate</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.83rem;padding-top:12px;border-top:1px solid #f0f0f0">
+                  <span style="color:var(--gray)">Daily Rate</span>
+                  <strong class="emp-rate">—</strong>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>📋 My Details</h3></div>
+              <div class="card-body" style="font-size:0.83rem;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Location</span><strong class="emp-location">—</strong></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Joined</span><strong class="emp-join">—</strong></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--gray)">Status</span><span class="badge badge-success">Active</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE PAGE -->
+      <div id="page-attendance" class="portal-page hidden">
+        <div class="page-header">
+          <div><h1>My Attendance</h1><p>Full attendance history by month</p></div>
+        </div>
+        <div class="attendance-calendar">
+          <div class="cal-header">
+            <h3>📅 Attendance Calendar</h3>
+            <div class="cal-nav">
+              <button onclick="changeMonth2(-1)">‹</button>
+              <span id="calMonthLabel2">Loading...</span>
+              <button onclick="changeMonth2(1)">›</button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid2"></div>
+          <div class="cal-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#d4efdf"></div>Present</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fadbd8"></div>Absent</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fdebd0"></div>Half Day</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#d6eaf8"></div>Overtime</div>
+          </div>
+        </div>
+        <div class="table-wrap" style="margin-top:24px">
+          <div class="table-header"><h3>Attendance Log</h3></div>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date</th><th>Day</th><th>Status</th><th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody id="attendHistBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EARNINGS PAGE -->
+      <div id="page-earnings" class="portal-page hidden">
+        <div class="page-header">
+          <div><h1>My Earnings</h1><p>Monthly salary breakdown and payment history</p></div>
+        </div>
+        <div class="payout-summary">
+          <div class="payout-card">
+            <div class="label">Days Present</div>
+            <div class="amount" id="earningPresent" style="color:var(--success)">—</div>
+            <div class="label">This Month</div>
+          </div>
+          <div class="payout-card">
+            <div class="label">Gross Salary</div>
+            <div class="amount" id="earningGross" style="color:var(--primary)">—</div>
+            <div class="label">Before Deductions</div>
+          </div>
+          <div class="payout-card">
+            <div class="label">Est. Net Pay</div>
+            <div class="amount" id="earningNet" style="color:var(--info)">—</div>
+            <div class="label">After 5% Deduction</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>💰 Salary Breakdown</h3></div>
+          <div class="card-body" id="earningBreakdown" style="font-size:0.9rem;display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+
+      <!-- PROFILE PAGE -->
+      <div id="page-profile" class="portal-page hidden">
+        <div class="page-header">
+          <div><h1>My Profile</h1><p>Your personal and job information</p></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>👤 Employee Information</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #f0f0f0">
+              <div style="width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:800" class="emp-avatar">R</div>
+              <div>
+                <h2 class="emp-name" style="font-size:1.4rem">—</h2>
+                <div style="color:var(--gray);font-size:0.88rem;margin-top:4px" class="emp-role">—</div>
+                <span class="badge badge-success" style="margin-top:8px;display:inline-block">Active Employee</span>
+              </div>
+            </div>
+            <div class="info-grid">
+              <div class="info-item"><label>Employee ID</label><span class="emp-id">—</span></div>
+              <div class="info-item"><label>Mobile Number</label><span class="emp-mobile">—</span></div>
+              <div class="info-item"><label>Department</label><span class="emp-dept">—</span></div>
+              <div class="info-item"><label>Role / Designation</label><span class="emp-rolelabel">—</span></div>
+              <div class="info-item"><label>Assigned Project</label><span class="emp-project">—</span></div>
+              <div class="info-item"><label>Location</label><span class="emp-location">—</span></div>
+              <div class="info-item"><label>Daily Rate</label><span class="emp-rate">—</span></div>
+              <div class="info-item"><label>Date of Joining</label><span class="emp-join">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHANGE PASSWORD PAGE -->
+      <div id="page-password" class="portal-page hidden">
+        <div class="page-header">
+          <div><h1>Change Password</h1><p>Update your login password</p></div>
+        </div>
+        <div class="card" style="max-width:480px">
+          <div class="card-header"><h3>🔒 Change Password</h3></div>
+          <div class="card-body">
+            <form id="changePwForm" onsubmit="changeEmpPassword(event)">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="currentPw" placeholder="Enter current password" required>
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="newPw" placeholder="Minimum 6 characters" required>
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPw" placeholder="Re-enter new password" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Update Password →</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../js/employee-portal.js"></script>
+  <script>
+    let calYear, calMonth, calYear2, calMonth2;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const emp = requireEmpAuth();
+      if (!emp) return;
+
+      generateSampleAttendance();
+
+      const today = new Date();
+      calYear = today.getFullYear();
+      calMonth = today.getMonth();
+      calYear2 = calYear;
+      calMonth2 = calMonth;
+
+      document.getElementById('todayDate').textContent = today.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+      // Populate all emp fields
+      document.querySelectorAll('.emp-name').forEach(el => el.textContent = emp.name);
+      document.querySelectorAll('.emp-id').forEach(el => el.textContent = emp.id);
+      document.querySelectorAll('.emp-mobile').forEach(el => el.textContent = emp.mobile);
+      document.querySelectorAll('.emp-role').forEach(el => el.textContent = emp.role);
+      document.querySelectorAll('.emp-rolelabel').forEach(el => el.textContent = emp.role);
+      document.querySelectorAll('.emp-dept').forEach(el => el.textContent = emp.dept);
+      document.querySelectorAll('.emp-project').forEach(el => el.textContent = emp.project);
+      document.querySelectorAll('.emp-location').forEach(el => el.textContent = emp.location);
+      document.querySelectorAll('.emp-join').forEach(el => el.textContent = formatDate(emp.joinDate));
+      document.querySelectorAll('.emp-rate').forEach(el => el.textContent = '₹' + emp.dailyRate + '/day');
+      document.querySelectorAll('.emp-avatar').forEach(el => el.textContent = emp.name.charAt(0));
+
+      loadEmployeeStats(emp);
+      renderDashCalendar(emp);
+      renderAttendHistory(emp);
+      renderEarnings(emp);
+    });
+
+    function renderDashCalendar(emp) {
+      const attendance = Store.attendance();
+      renderCalendar(document.getElementById('calGrid'), document.getElementById('calMonthLabel'), calYear, calMonth, emp.id, attendance);
+      renderCalendar(document.getElementById('calGrid2'), document.getElementById('calMonthLabel2'), calYear2, calMonth2, emp.id, attendance);
+    }
+
+    function changeMonth(dir) {
+      const emp = Store.session();
+      calMonth += dir;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar(document.getElementById('calGrid'), document.getElementById('calMonthLabel'), calYear, calMonth, emp.id, Store.attendance());
+    }
+
+    function changeMonth2(dir) {
+      const emp = Store.session();
+      calMonth2 += dir;
+      if (calMonth2 > 11) { calMonth2 = 0; calYear2++; }
+      if (calMonth2 < 0) { calMonth2 = 11; calYear2--; }
+      renderCalendar(document.getElementById('calGrid2'), document.getElementById('calMonthLabel2'), calYear2, calMonth2, emp.id, Store.attendance());
+    }
+
+    function renderAttendHistory(emp) {
+      const attendance = Store.attendance();
+      const today = new Date();
+      const rows = [];
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const statusMap = { present:'<span class="badge badge-success">Present</span>', absent:'<span class="badge badge-danger">Absent</span>', half:'<span class="badge badge-warning">Half Day</span>', overtime:'<span class="badge badge-info">Overtime</span>' };
+
+      for (let d = today.getDate(); d >= 1; d--) {
+        const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const s = attendance[dateStr]?.[emp.id];
+        const dayName = days[new Date(dateStr).getDay()];
+        rows.push(`<tr><td>${dateStr}</td><td>${dayName}</td><td>${statusMap[s] || '<span style="color:#999">No Record</span>'}</td><td style="color:#999;font-size:0.82rem">${s === 'present' ? '₹'+emp.dailyRate : s === 'half' ? '₹'+(emp.dailyRate*0.5) : '—'}</td></tr>`);
+      }
+      document.getElementById('attendHistBody').innerHTML = rows.join('');
+    }
+
+    function renderEarnings(emp) {
+      const attendance = Store.attendance();
+      const today = new Date();
+      let present = 0, half = 0, overtime = 0;
+      for (let d = 1; d <= today.getDate(); d++) {
+        const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const s = attendance[dateStr]?.[emp.id];
+        if (s === 'present') present++;
+        else if (s === 'half') half++;
+        else if (s === 'overtime') overtime++;
+      }
+      const gross = (present * emp.dailyRate) + (half * emp.dailyRate * 0.5) + (overtime * emp.dailyRate * 1.5);
+      const deduction = Math.round(gross * 0.05);
+      const net = gross - deduction;
+
+      document.getElementById('earningPresent').textContent = present + ' days';
+      document.getElementById('earningGross').textContent = '₹' + gross.toLocaleString('en-IN');
+      document.getElementById('earningNet').textContent = '₹' + net.toLocaleString('en-IN');
+
+      document.getElementById('earningBreakdown').innerHTML = `
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="color:var(--gray)">Present Days (${present} × ₹${emp.dailyRate})</span><strong>₹${(present*emp.dailyRate).toLocaleString('en-IN')}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="color:var(--gray)">Half Days (${half} × ₹${emp.dailyRate*0.5})</span><strong>₹${(half*emp.dailyRate*0.5).toLocaleString('en-IN')}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="color:var(--gray)">Overtime (${overtime} × ₹${emp.dailyRate*1.5})</span><strong>₹${(overtime*emp.dailyRate*1.5).toLocaleString('en-IN')}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="color:var(--gray)">Gross Total</span><strong style="color:var(--primary)">₹${gross.toLocaleString('en-IN')}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="color:var(--danger)">Deduction (5%)</span><strong style="color:var(--danger)">-₹${deduction.toLocaleString('en-IN')}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 0;background:#f8f9fa;margin:0 -8px;padding:12px 8px;border-radius:8px"><strong style="color:var(--secondary)">Net Payable</strong><strong style="font-size:1.1rem;color:var(--info)">₹${net.toLocaleString('en-IN')}</strong></div>
+      `;
+    }
+
+    function switchSidebar(page) {
+      document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.portal-page').forEach(el => el.classList.add('hidden'));
+      document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+      document.getElementById('page-' + page)?.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

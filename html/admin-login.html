@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login – GDR Construction</title>
+  <link rel="stylesheet" href="../css/portal.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-container">
+
+      <!-- LEFT PANEL -->
+      <div class="login-left" style="background:linear-gradient(145deg,#2c3e50,#1a252f,#0d1b2a)">
+        <div>
+          <div class="brand">
+            <div class="brand-logo" style="font-size:1rem">GDR</div>
+            <div>
+              <div style="font-size:1.1rem;font-weight:800">GDR Construction</div>
+              <div style="font-size:0.75rem;opacity:0.8">Admin Management Portal</div>
+            </div>
+          </div>
+          <h1>Admin Control Centre 🔐</h1>
+          <p>Full access to employee management, attendance tracking, payroll processing, and operational reports for GDR Construction.</p>
+        </div>
+        <div class="login-features">
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Manage employee database (add/edit/delete)</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Mark daily attendance for all workers</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Calculate and process monthly payouts</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Import/export Excel files for bulk updates</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Generate attendance and payroll reports</span>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;opacity:0.6;margin-top:24px">
+          🔐 Authorized personnel only · GDR Construction
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="login-right">
+        <h2>Admin Login</h2>
+        <p class="subtitle">Enter your admin credentials to continue</p>
+
+        <div id="adminError" class="hidden" style="background:#fadbd8;color:#c0392b;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:16px;border:1px solid #f1948a"></div>
+
+        <form onsubmit="adminLogin(event)">
+          <div class="form-group">
+            <label>Admin Username</label>
+            <div class="input-wrap">
+              <span class="icon">👤</span>
+              <input type="text" id="adminUser" placeholder="Enter username" value="admin" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrap">
+              <span class="icon">🔒</span>
+              <input type="password" id="adminPass" placeholder="Enter admin password" value="gdr2024" required>
+              <button type="button" class="toggle-pw" onclick="togglePw('adminPass', this)">👁️</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;background:var(--secondary)">Sign In to Admin Portal →</button>
+        </form>
+
+        <div class="login-links" style="margin-top:20px">
+          <a href="employee-login.html">👷 Employee Login instead?</a>
+          <a href="index.html">← Back to Website</a>
+        </div>
+
+        <div class="divider">Demo Credentials</div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:14px;font-size:0.82rem;color:#555">
+          <div style="margin-bottom:6px"><strong>Username:</strong> admin</div>
+          <div><strong>Password:</strong> gdr2024</div>
+          <div style="margin-top:8px;color:#999;font-size:0.78rem">⚠️ Admin portal has full access to all data</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/admin-portal.js"></script>
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else { input.type = 'password'; btn.textContent = '👁️'; }
+    }
+  </script>
+</body>
+</html>

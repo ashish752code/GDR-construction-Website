@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Login – GDR Construction</title>
+  <link rel="stylesheet" href="../css/portal.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-container">
+
+      <!-- LEFT PANEL -->
+      <div class="login-left">
+        <div>
+          <div class="brand">
+            <div class="brand-logo">GDR</div>
+            <div>
+              <div style="font-size:1.1rem;font-weight:800">GDR Construction</div>
+              <div style="font-size:0.75rem;opacity:0.8">Employee Self-Service Portal</div>
+            </div>
+          </div>
+          <h1>Welcome Back, Team! 👷</h1>
+          <p>Log in to view your attendance records, check your earnings, and manage your personal details — all in one place.</p>
+        </div>
+        <div class="login-features">
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>View your monthly attendance calendar</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Check estimated monthly earnings</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>Change your password anytime</span>
+          </div>
+          <div class="login-feature">
+            <div class="check">✓</div>
+            <span>View your project assignment</span>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;opacity:0.6;margin-top:24px">
+          📍 Capitol, High Street, Jaipur, Rajasthan
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="login-right">
+        <h2>Employee Login</h2>
+        <p class="subtitle">Use your registered mobile number & password</p>
+
+        <!-- TABS -->
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="login" onclick="switchLoginTab('login')">Sign In</button>
+          <button class="modal-tab" data-tab="setpass" onclick="switchLoginTab('setpass')">Set Password</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="tab-login" class="login-tab-content">
+          <div id="loginError" class="hidden" style="background:#fadbd8;color:#c0392b;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:16px;border:1px solid #f1948a"></div>
+          <form onsubmit="empLogin(event)">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <div class="input-wrap">
+                <span class="icon">📱</span>
+                <input type="tel" id="empMobile" placeholder="Enter your 10-digit mobile number" maxlength="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="input-wrap">
+                <span class="icon">🔒</span>
+                <input type="password" id="empPassword" placeholder="Enter your password" required>
+                <button type="button" class="toggle-pw" onclick="togglePw('empPassword', this)">👁️</button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:8px">Sign In →</button>
+          </form>
+          <div class="login-links">
+            <span style="color:#999;font-size:0.82rem">First time? <a href="#" onclick="switchLoginTab('setpass')">Set your password</a></span>
+            <a href="index.html">← Back to Website</a>
+          </div>
+          <div class="divider">Demo Credentials</div>
+          <div style="background:#f8f9fa;border-radius:10px;padding:14px;font-size:0.82rem;color:#555">
+            <div style="margin-bottom:6px"><strong>Mobile:</strong> 9876543210</div>
+            <div><strong>Password:</strong> emp1234</div>
+            <div style="margin-top:8px;color:#999;font-size:0.78rem">Try any employee from GDR001–GDR008 with password: emp1234</div>
+          </div>
+        </div>
+
+        <!-- SET PASSWORD FORM -->
+        <div id="tab-setpass" class="login-tab-content hidden">
+          <div id="setPassError" class="hidden" style="background:#fadbd8;color:#c0392b;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:16px;border:1px solid #f1948a"></div>
+          <p style="font-size:0.85rem;color:#666;margin-bottom:20px">Enter your registered mobile number and create a new password. Contact admin if your mobile is not registered.</p>
+          <form onsubmit="empSetPassword(event)">
+            <div class="form-group">
+              <label>Registered Mobile Number</label>
+              <div class="input-wrap">
+                <span class="icon">📱</span>
+                <input type="tel" id="newMobile" placeholder="Your mobile number" maxlength="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <div class="input-wrap">
+                <span class="icon">🔒</span>
+                <input type="password" id="newPassword" placeholder="Minimum 6 characters" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <div class="input-wrap">
+                <span class="icon">🔒</span>
+                <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:8px">Set Password →</button>
+          </form>
+          <div class="login-links">
+            <a href="#" onclick="switchLoginTab('login')">← Back to Login</a>
+            <a href="index.html">Back to Website</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/employee-portal.js"></script>
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else { input.type = 'password'; btn.textContent = '👁️'; }
+    }
+    function switchLoginTab(tab) {
+      document.querySelectorAll('.login-tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.modal-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tab)?.classList.remove('hidden');
+      document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+      document.getElementById('loginError')?.classList.add('hidden');
+      document.getElementById('setPassError')?.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
